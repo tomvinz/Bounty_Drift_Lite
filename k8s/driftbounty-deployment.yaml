@@ -16,7 +16,7 @@ spec:
       serviceAccountName: driftbounty
       containers:
         - name: driftbounty
-          image: ghcr.io/YOUR_GITHUB_USERNAME/driftbounty-lite:latest
+          image: ghcr.io/tomvinz/driftbounty-lite:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
