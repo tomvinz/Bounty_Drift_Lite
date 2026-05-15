@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driftbounty
+  namespace: driftbounty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driftbounty
+  template:
+    metadata:
+      labels:
+        app: driftbounty
+    spec:
+      serviceAccountName: driftbounty
+      containers:
+        - name: driftbounty
+          image: ghcr.io/YOUR_GITHUB_USERNAME/driftbounty-lite:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: WATCH_NAMESPACE
+              value: demo
+            - name: EXPECTED_CONFIGMAP
+              value: expected-state
+            - name: EXPECTED_CONFIGMAP_KEY
+              value: demo-nginx.yaml
+            - name: SCAN_INTERVAL_SECONDS
+              value: "30"
+            - name: GITHUB_REPOSITORY
+              value: YOUR_GITHUB_USERNAME/driftbounty-lite
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token

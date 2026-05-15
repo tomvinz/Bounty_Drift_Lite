@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expected-state
+  namespace: demo
+data:
+  demo-nginx.yaml: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: demo-nginx
+      namespace: demo
+    spec:
+      replicas: 2
