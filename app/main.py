@@ -1,17 +1,28 @@
 import threading
+import traceback
 
-from drift_detector import DriftDetector
 from fastapi import FastAPI
+from drift_detector import DriftDetector
 
 
 app = FastAPI(title="DriftBounty Lite")
 
-detector = DriftDetector()
+
+def run_detector():
+    print("Starting DriftBounty detector thread...", flush=True)
+
+    try:
+        detector = DriftDetector()
+        detector.run_forever()
+    except Exception:
+        print("Detector crashed:", flush=True)
+        traceback.print_exc()
 
 
 @app.on_event("startup")
 def startup_event():
-    thread = threading.Thread(target=detector.run_forever, daemon=True)
+    print("FastAPI startup event triggered", flush=True)
+    thread = threading.Thread(target=run_detector, daemon=True)
     thread.start()
 
 
