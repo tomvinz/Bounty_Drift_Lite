@@ -1,5 +1,6 @@
 import threading
 import traceback
+import sys
 
 from fastapi import FastAPI
 from drift_detector import DriftDetector
@@ -16,7 +17,8 @@ def run_detector():
         detector.run_forever()
     except Exception:
         print("Detector crashed:", flush=True)
-        traceback.print_exc()
+        traceback.print_exc(file=sys.stdout)
+        sys.stdout.flush()
 
 
 @app.on_event("startup")
@@ -24,17 +26,3 @@ def startup_event():
     print("FastAPI startup event triggered", flush=True)
     thread = threading.Thread(target=run_detector, daemon=True)
     thread.start()
-
-
-@app.get("/")
-def root():
-    return {
-        "name": "DriftBounty Lite",
-        "status": "running",
-        "description": "Detects Kubernetes drift and creates GitHub issues.",
-    }
-
-
-@app.get("/health")
-def health():
-    return {"status": "healthy"}
